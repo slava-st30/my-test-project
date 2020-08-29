@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="description" content="...">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>flex table</title>
+
+    <style>
+        .my-field {
+            width: 1000px;
+            margin-top: 50px;
+            margin-left: 50px;
+            overflow: hidden;
+        }
+        .my-head {
+            display: flex;
+            width: calc(100% + 16px);
+            flex-direction: column;
+            flex-flow: row wrap;
+            border-top: 1px solid black;
+            background-color: beige;
+            overflow-y: scroll;
+            box-sizing: border-box;
+        }
+        .my-table {
+            display: flex;
+            width: calc(100% + 16px);
+            flex-direction: column;
+            flex-flow: row wrap;
+            max-height: 300px;
+            overflow-y: scroll;
+            box-sizing: border-box;
+        }
+        .my-row {
+            display: flex;
+            flex: 100%;
+            flex-direction: row;
+            height: 34px;
+            border-left: 1px solid black;
+            box-sizing: border-box;
+        }
+        .my-cell {
+            display: flex;
+            flex: 5;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .my-cell2 {
+            display: flex;
+            flex: 3;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    
+    <div class='my-field'>
+        <div class='my-head' ></div>
+        <div class='my-table'></div>
+
+    </div>
+  
+    <script>
+
+        let list = [
+            {  name: 'Mkhitaryan', club: 'Arsenal'          , nation: 'Armenia'           , age: 29, position: 'midfielder' }, 
+            {  name: 'Neymar'    , club: 'PSG'              , nation: 'Brazil'            , age: 26, position: 'attacker'   }, 
+            {  name: 'Dybala'    , club: 'Juventus'         , nation: 'Argentina'         , age: 24, position: 'attacker'   }, 
+            {  name: 'Messi'     , club: 'Barcelona'        , nation: 'Argentina'         , age: 31, position: 'attacker'   }, 
+            {  name: 'Ronaldo'   , club: 'Juventus'         , nation: 'Portugal'          , age: 33, position: 'attacker'   }, 
+            {  name: 'Buffon'    , club: 'PSG'              , nation: 'Italy'             , age: 40, position: 'goalkeeper' }, 
+            {  name: 'Golovin'   , club: 'Monaco'           , nation: 'Russia'            , age: 22, position: 'midfielder' }, 
+            {  name: 'Modric'    , club: 'Real Madrid'      , nation: 'Spain'             , age: 33, position: 'midfielder' }, 
+            {  name: 'Hazard'    , club: 'Chelsea'          , nation: 'Belgium'           , age: 27, position: 'midfielder' }, 
+            {  name: 'Mbappe'    , club: 'PSG'              , nation: 'France'            , age: 19, position: 'attacker'   }, 
+            {  name: 'Ramos'     , club: 'Real Madrid'      , nation: 'Spain'             , age: 32, position: 'defender'   }, 
+            {  name: 'Casillas'  , club: 'Porto'            , nation: 'Spain'             , age: 37, position: 'goalkeeper' }, 
+            {  name: 'De Gea'    , club: 'Manchester United', nation: 'Spain'             , age: 27, position: 'goalkeeper' }, 
+            {  name: 'Pogba'     , club: 'Manchester United', nation: 'France'            , age: 25, position: 'midfielder' }, 
+            {  name: 'Muller'    , club: 'Bayern Munchen'   , nation: 'Germany'           , age: 29, position: 'attacker'   }, 
+            {  name: 'Griezmann' , club: 'Atletico Madrid'  , nation: 'France'            , age: 27, position: 'attacker'   }, 
+            {  name: 'Marcelo'   , club: 'Real Madrid'      , nation: 'Brazil'            , age: 30, position: 'defender'   }, 
+            {  name: 'Pjanić'    , club: 'Juventus'         , nation: 'Bosnia–Herzegovina', age: 28, position: 'midfielder' },
+            
+        ];
+    
+        let tableField = document.getElementsByClassName('my-table')[0];
+        let tableHTML = '';
+        for (let i in list) {
+        tableHTML += '<div class="my-row">';
+            for (let j in list[i]) {
+                tableHTML += ( j == 'club' || j == 'name' || j  == "nation" ? '<div class="my-cell">' : '<div class="my-cell2">' ) + list[i][j] + '</div>';
+            }
+            tableHTML += '</div>';
+        }
+        tableField.innerHTML = tableHTML;
+
+        let head = document.getElementsByClassName('my-head')[0];
+        let headHTML = '<div class="my-row">';
+        for (let j in list[0]) {
+            headHTML += (  j == 'club' || j == 'name' || j  == "nation" ? '<div class="my-cell">' : '<div class="my-cell2">' ) + j + '</div>';
+        }
+        headHTML += '</div>';
+        head.innerHTML = headHTML;
+
+
+
+
+
+    </script>
+
+</body>
+</html>

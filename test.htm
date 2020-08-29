@@ -1,0 +1,261 @@
+<html>
+    <meta>
+    <head>
+
+
+        <style>
+            .my-field {
+                width: 1000px;
+                margin-top: 50px;
+                margin-left: 50px;
+                overflow: hidden;
+                position: relative;
+            }
+            .my-head {
+                display: flex;
+                width: calc(100% + 16px);
+                flex-direction: column;
+                flex-flow: row wrap;
+                border-top: 1px solid black;
+                background-color: beige;
+                overflow-y: scroll;
+                box-sizing: border-box;
+                cursor: pointer;
+            }
+            .my-table {
+                display: flex;
+                width: calc(100% + 16px);
+                flex-direction: column;
+                flex-flow: row wrap;
+                max-height: 300px;
+                overflow-y: scroll;
+                box-sizing: border-box;
+            }
+            .my-row {
+                display: flex;
+                flex: 100%;
+                flex-direction: row;
+                height: 34px;
+                border-left: 1px solid black;
+                box-sizing: border-box;
+            }
+            .my-cell {
+                display: flex;
+                flex: 12;
+                border-bottom: 1px solid black;
+                border-right: 1px solid black;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+            .sub-head {
+                display: flex;
+                width: calc(100% + 16px);
+                flex-direction: column;
+                flex-flow: row wrap;
+                border-top: 1px solid black;
+                background-color: beige;
+                overflow-y: scroll;
+                box-sizing: border-box;
+                cursor: pointer;
+            }
+            .sub-table {
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                flex-flow: row wrap;
+                box-sizing: border-box;
+                background-color: #d0d0d6;
+            }
+            .sub-row {
+                display: flex;
+                flex: 100%;
+                flex-direction: row;
+                height: 34px;
+                border-left: 1px solid black;
+                box-sizing: border-box;
+            }
+            .sub-cell {
+                display: flex;
+                flex: 5;
+                border-bottom: 1px solid black;
+                border-right: 1px solid black;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+            .merge-row {
+                display: flex; 
+                flex-direction: column; 
+                flex: 100%; 
+                line-height: 34px;
+            }
+            .add-btn {
+                display: flex;
+                flex: 1;
+                border-bottom: 1px solid black;
+                border-right: 1px solid black;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+            .add-btn1 {
+                display: flex;
+                background-color: #ffffff00;
+                flex: 1;
+                border-bottom: 1px solid black;
+                border-right: 1px solid black;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+            .filter {
+                width: 800px;
+                margin-top: 50px;
+                margin-left: 50px;
+                overflow: hidden;
+                position: relative;   
+            }
+            .xml {
+                left: calc(100% - 160px);
+                top: calc(10px);
+                width: 200px;
+                margin-top: 50px;
+                margin-right: 50px;
+                overflow: hidden;
+                position: absolute ;   
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div id="app">
+            <div class='filter'>                
+                <fieldset>
+                    show rows where age = 
+                    <select id = "selColor" @change='filterTable'>
+                     <option value = ""></option>
+                     <option value = "18">18</option>
+                     <option value = "48">48</option>
+                     <option value = "68">68</option>
+                     <option value = "88">88</option>
+                    </select>
+                </fieldset>
+            </div>
+            <div class='xml'>
+                <button type="button" class="add-btn" @click='DownloadXML'>
+                    Download XML
+                </button>
+            </div>
+            <div class='my-field'>
+                <div class='my-head' >
+                    <div class='my-row'>
+                        <div v-for='(cell, index) in header' class='my-cell' @click='sortTable(index)'>
+                            {{ cell }}
+                        </div>
+                        
+                        <button type="button" class="add-btn1" ></button>
+                    </div>
+                </div>
+                <div class='my-table'>
+                    <div v-for='(row, rowindex) in titleList' class="merge-row">
+                        <div class='my-row'>
+                            <div v-for='(cell, cellindex) in row' class='my-cell'>
+                                {{ cell }}
+                            </div>
+                            <button type="button" class="add-btn" @click='showRow(rowindex)'>
+                                +
+                            </button>
+                        </div>
+                        <div v-if='list[rowindex].sublist.length > 0' v-show='list[rowindex].opened' class="sub-table">
+                            <div v-for='row in list[rowindex].sublist' class="sub-row">
+                                <div v-for='cell in row' class="sub-cell">
+                                    {{ cell }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+        
+            </div>
+
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script>
+
+            
+            let app = new Vue({
+                el: '#app',
+                data: {
+                    header: { name: 'Name', age: 'Age', country: 'Country' },
+                    currentSortProp: '',
+                    ageFilterValue: '',
+
+                    list: []
+                }
+                ,
+                computed: {
+                    titleList () {
+                        return this.list.map(row => ({name: row.name, age: row.age, country: row.country})).filter(row => !this.ageFilterValue || (row.age == this.ageFilterValue));                        
+                    
+                    },
+                    
+                }
+                ,
+                methods: {
+                    sortTable(prop) {
+                        let direction = (this.currentSortProp == prop) - 0.5;
+                        this.list.sort( (a, b) => a[prop] > b[prop] ? -direction : a[prop] < b[prop] ? direction : 0 );
+                        this.currentSortProp = direction < 0 ? prop : '';
+                    }
+                    ,
+                    showRow(indexrow) {
+                        this.list[indexrow].opened = !this.list[indexrow].opened;
+                    },
+                    filterTable(event) {                        
+                        this.ageFilterValue = event.target.value;
+                    },
+                    DownloadXML() {
+
+                    }
+
+                }
+                
+            })
+
+
+            let sublist = [
+                {gid: '32432'   , status: 'e' , chrtid: '55464564'},
+                {gid: '32432'   , status: 'e' , chrtid: '55464564'},
+                {gid: '32432'   , status: 'e' , chrtid: '5546ddds'},
+                {gid: '32432'   , status: 'e' , chrtid: '55464464'},
+                {gid: '32432'   , status: 'e' , chrtid: '55464345'},
+            ];
+
+            let json = [
+                { name: 'Ivan3'     , age: 18, country: 'Russia1', sublist: sublist , opened: false},
+                { name: 'Ivan2'     , age: 18, country: 'Russia2', sublist: sublist , opened: false},
+                { name: 'Ivan4'     , age: 88, country: 'Russia3', sublist: sublist , opened: false},
+                { name: 'Ivan21312' , age: 28, country: 'Russia4', sublist: sublist , opened: false},
+                { name: 'Ivan2'     , age: 48, country: 'Russia5', sublist: sublist , opened: false},
+                { name: 'Ivan2'     , age: 58, country: 'Russia6', sublist: sublist , opened: false},
+                { name: 'Ivan55'    , age: 18, country: 'Russia7', sublist: sublist , opened: false},
+                { name: 'Ivan3'     , age: 18, country: 'Russia8', sublist: sublist , opened: false},
+            ];
+            json = JSON.stringify(json);
+
+            app.list = JSON.parse(json);
+
+        </script>
+
+    </body>
+</html>
